@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <style>
+        body {
+            background-color: black;
+        }
+
+
+        .img-in-cint {
+            width: 140px;
+            margin-left: 20px;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+        }
+
+        #img-prev {
+            width: 100%;
+            height: 70vh;
+            background-color: red;
+        }
+
+        input,
+        textarea,
+        select {
+            font-size: 1.1rem;
+
+        }
+
+        label {
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+
+        .arrows {}
+
+        #btn-save {
+            width: 100%;
+            background-color: rgb(143, 255, 106);
+            color: black;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div>
+        <button id="btn-save">SAVE</button>
+    </div>
+
+
+    <table style="width: 100%;">
+        <td style="width: 30%;">
+            <img src="" id="img-prev" alt="">
+        </td>
+        <td style="width: 70%; ">
+            <div>
+                <label for="">TITLE</label>
+                <br>
+                <input data-data="" type="name" name="title">
+            </div>
+            <div>
+                <label for="">DESCRIPTION</label>
+                <br>
+                <textarea data-data="" name="description" id=""></textarea>
+            </div>
+
+            <div>
+                <label for="">STARS</label>
+                <br>
+                <select data-data="" name="level"></select>
+                <button id="addstars">+</button>
+            </div>
+
+            <div>
+                <label for="">ATRIBUTES</label>
+                <br>
+                <select data-data="" name="attibute"></select>
+                <button id="addattributes">+</button>
+            </div>
+            <div id="la">
+
+                <label for="">ARROWS</label>
+                <br>
+                <button id="addarrow">+</button>
+
+            </div>
+
+
+            <div>
+
+                <label for="">ATK</label>
+                <br>
+
+                <input data-data="" type="number" name="atk" id="">
+                <br>
+                <label for="">DEF</label>
+                <br>
+                <input data-data="" type="number" name="def" id="">
+            </div>
+
+            <div>
+                <label for="">PEDULUM SCALE</label>
+                <br>
+                <input data-data="" type="number" name="pendulum_scale">
+            </div>
+
+            <div>
+                <label for="">TYPE</label>
+                <br>
+                <select data-data="" name="type" id=""></select>
+                <button id="addtype">+</button>
+
+            </div>
+
+
+            <div id="tys">
+                <label for="">TYPES</label>
+                <br>
+
+                <button id="addtypes">+</button>
+
+            </div>
+        </td>
+
+
+
+    </table>
+
+
+
+    <table>
+        <tbody>
+            <tr id="img-cint">
+                <td class="img-in-cint">
+                    <img id="def" src="" 
+                    style="width: 80%;" alt="">
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <script src="./Libs/tactical_push.js"></script>
+
+    <script>
+
+
+
+        // IMAGES SECTION
+
+        let imgs = [];
+
+
+        (async () => {
+            const response = (await axios.get('/cards/data')).data;
+            console.log(response);
+            document.title = response.id;
+            imgs.push(response.img[0])
+
+          
+
+            const change_color = (img, div, label ,value           ) => {
+
+                
+                if (imgs.indexOf(img) == -1) {
+                    if (value) {
+                        div.style.background = "red";
+                        imgs.tp(img, value);
+                        // label.textContent = value;
+                    } else {
+                        div.style.background = "red";
+                        imgs.push(img)
+                        // label.textContent =   imgs.findIndex(cd => cd == img )
+                    }
+                } else {
+                    label.textContent = 'None'
+                    div.style.background = "transparent";
+                    imgs = imgs.filter(ims => ims != img);
+                }
+
+
+                const ele = document.querySelectorAll(`[data-url]`);
+                for (let i = 0; i < ele.ele; i++) {
+                    const element = ele[i];
+                    element.textContent = "None";
+
+                }
+
+                imgs.map((ims, i) => {
+                    const ele = document.querySelectorAll(`[data-url="${ims}"]`)[0];
+                    ele.textContent = i;
+
+
+                })
+            }
+
+            response.img.map((img, i) => {
+                const im = document.createElement('img');
+                const label = document.createElement("label");
+                label.textContent = 'None';
+                label.setAttribute('data-url', img)
+                im.onclick = () => {
+
+                    document.getElementById("img-prev").src = img;
+                }
+
+
+
+
+
+
+                im.ondblclick = () => {
+                    Swal.fire({
+                        title: "Position Img",
+                        input: "number",
+
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                    }).then(({ isConfirmed, value }) => {
+                        if (isConfirmed) {
+
+                            
+                            change_color(img, div, label, value)
+
+
+                            // if (imgs.indexOf(img) == -1) {
+                            //     if (value) {
+                            //         div.style.background = "red";
+                            //         imgs.tp(img, value);
+                            //         // label.textContent = value;
+                            //     } else {
+                            //         div.style.background = "red";
+                            //         imgs.push(img)
+                            //         // label.textContent =   imgs.findIndex(cd => cd == img )
+                            //     }
+                            // } else {
+                            //     label.textContent = 'None'
+                            //     div.style.background = "transparent";
+                            //     imgs = imgs.filter(ims => ims != img);
+                            // }
+
+
+                            // const ele = document.querySelectorAll(`[data-url]`);
+                            // for (let i = 0; i < ele.ele; i++) {
+                            //     const element = ele[i];
+                            //     element.textContent = "None";
+
+                            // }
+
+                            // imgs.map((ims, i) => {
+                            //     const ele = document.querySelectorAll(`[data-url="${ims}"]`)[0];
+                            //     ele.textContent = i;
+
+
+                            // })
+                        }
+
+
+                    });
+                }
+                im.src = img;
+                im.style.width = "80%";
+
+                const div = document.createElement('td');
+                div.classList.add('img-in-cint')
+                div.append(im)
+                div.append(document.createElement("br"))
+                div.append(label)
+                document.getElementById('img-cint').append(div)
+
+                const ele = document.querySelectorAll(`[data-url]`);
+                for (let i = 0; i < ele.ele; i++) {
+                    const element = ele[i];
+                    element.textContent = "None";
+
+                }
+
+                imgs.map((ims, i) => {
+                    const ele = document.querySelectorAll(`[data-url="${ims}"]`)[0];
+                    ele.textContent = i;
+                    if(img == ims){
+                        div.style.background = "red";
+
+                    }
+                    // div.style.background = "red";
+
+                
+
+                })
+            })
+
+            document.getElementsByName('title')[0].value = response.name;
+            // IMAGES SECTION
+
+            // LEVEL SECTION
+
+            const add_levels = () => {
+                document.getElementsByName('level')[0].textContent = "";
+                for (let i = 0; i <= 12; i++) {
+                    let value = i;
+                    let text = i;
+                    if (i == 0) {
+                        value = undefined;
+                        text = 'none';
+                    }
+
+                    const op = document.createElement('option');
+                    op.textContent = text;
+                    op.value = value;
+                    document.getElementsByName('level')[0].append(op)
+
+                }
+                document.getElementsByName('level')[0].value = response.level;
+
+            }
+
+            if (response.level) {
+                add_levels()
+            }
+
+            document.getElementById("addstars").onclick = add_levels
+            // LEVEL SECTION
+            // ATRIBUTES SECTION
+            const add_attributes = () => {
+                document.getElementsByName('attibute')[0].textContent = "";
+                const attributes = [
+                    'DARK', 'EARTH', 'FIRE', 'LIGHT', 'WATER', 'WIND', 'DIVINE'
+                ];
+
+                for (let i = 0; i <= attributes.length; i++) {
+                    let value = attributes[i];
+                    let text = attributes[i];
+                    if (i == attributes.length) {
+                        value = undefined;
+                        text = 'none';
+                    }
+
+                    const op = document.createElement('option');
+                    op.textContent = text;
+                    op.value = value;
+                    document.getElementsByName('attibute')[0].append(op)
+
+                }
+
+
+                document.getElementsByName('attibute')[0].value = response.attibute;
+            }
+
+            if (response.attibute) {
+                add_attributes()
+            }
+            document.getElementById('addattributes').onclick = add_attributes
+            // ATRIBUTES SECTION
+            // ARROWS SECTION
+
+            const add_arrow = (la) => {
+                const arrows = [
+                    { txt: "None", value: "" },
+                    { txt: "↗", value: "Top-Right" },
+                    { txt: "→", value: "Right" },
+                    { txt: "↖", value: "Top-Left" },
+                    { txt: "←", value: "Left" },
+                    { txt: "↘", value: "Bottom-Right" },
+                    { txt: "↙", value: "Bottom-Left" },
+                    { txt: "↑", value: "Top" },
+                    { txt: "↓", value: "Bottom" }
+                ];
+
+                const sele = document.createElement("select");
+                sele.setAttribute('data-data', "")
+                sele.name = "link_arrows";
+                arrows.map(ar => {
+                    const opt = document.createElement("option");
+                    opt.textContent = ar.txt;
+                    opt.value = ar.value;
+                    sele.append(opt)
+                })
+                sele.value = la;
+                document.getElementById("la").append(sele)
+            }
+
+
+            if (response.link_arrows) {
+
+                response.link_arrows.split(',').map(la => la.trim()).map(la => {
+                    add_arrow(la)
+                })
+
+            }
+            document.getElementById('addarrow').onclick = add_arrow
+
+            // ARROWS SECTION
+
+            // STATS SECTION
+
+            if (response.stats) {
+                document.getElementsByName("atk")[0].value = response.stats[0];
+                document.getElementsByName("def")[0].value = response.stats[1];
+            }
+            // <select name="link_arrows"></select>
+            // STATS SECTION
+            // TYPE SECTION
+
+
+            const add_type = () => {
+                document.getElementsByName('type')[0].textContent = "";
+                const type = ['Monster', "Spell", "Trap"]
+
+                for (let i = 0; i <= type.length; i++) {
+                    let value = type[i];
+                    let text = type[i];
+                    if (i == type.length) {
+                        value = undefined;
+                        text = 'none';
+                    }
+
+                    const op = document.createElement('option');
+                    op.textContent = text;
+                    op.value = value;
+                    document.getElementsByName('type')[0].append(op)
+
+                }
+
+
+                document.getElementsByName('type')[0].value = response.type;
+            }
+
+            if (response.type) {
+                add_type()
+
+
+
+            }
+
+
+
+
+            if (response.pendulum_scale) {
+                document.getElementsByName("pendulum_scale")[0].value = response.pendulum_scale;
+
+            }
+
+
+            document.getElementById('addtype').onclick = add_type
+
+            // TYPE SECTION
+            // TYPES SECTION
+
+
+            const add_types = (ty) => {
+                const types =
+                    [
+
+                        "Aqua", "Beast", "Beast-Warrior", "Creator God", "Cyberse", "Dinosaur", "Divine-Beast", "Dragon",
+                        "Fairy", "Fiend", "Fish", "Insect", "Illusion", "Machine", "Plant", "Psychic", "Pyro", "Reptile",
+                        "Rock", "Sea Serpent", "Spellcaster", "Thunder", "Warrior", "Winged Beast", "Wyrm", "Zombie", 'Link', 'Effect', "Pendulum", 'Normal',
+                        'Ritual', 'Tuner', 'Synchro', 'Fusion', 'Continuos', 'Xyz', 'Equip', 'Flip', "Counter",
+                        "Field", 'Quick-Play', 'Spirit'
+                    ];
+
+
+                const sele = document.createElement("select");
+                sele.setAttribute('data-data', "")
+                sele.name = "types";
+                types.map(tys => {
+                    const opt = document.createElement("option");
+                    opt.textContent = tys;
+                    opt.value = tys;
+                    sele.append(opt)
+                })
+                sele.value = ty;
+                document.getElementById("tys").append(sele)
+            }
+            if (response.types) {
+
+                if (typeof response.types == 'string') {
+                    response.types = [response.types];
+                }
+
+                response.types.map(ty => ty.trim()).map(ty => {
+                    add_types(ty)
+                })
+
+            }
+
+            document.getElementById('addtypes').onclick = add_types
+            // TYPES SECTION
+            if (response.description) {
+                document.getElementsByName("description")[0].value = response.description
+            }
+
+            document.getElementById('btn-save').onclick = async () => {
+                const data_elements = document.querySelectorAll('[data-data]');
+                const finalData = {};
+
+                const newData = {};
+                for (let i = 0; i < data_elements.length; i++) {
+                    const element = data_elements[i];
+
+                    if (element.value != undefined && element.value.trim().length != 0) {
+                        if (newData[element.name] == undefined) {
+                            newData[element.name] = element.value;
+                        } else {
+
+                            if (!Array.isArray(newData[element.name])) {
+                                newData[element.name] = [newData[element.name]]
+
+                            }
+                            newData[element.name].push(element.value);
+
+                        }
+                    }
+
+
+
+
+
+
+
+
+                }
+
+
+
+                if (!Array.isArray(newData.types)) {
+                    newData.types = [newData.types];
+                }
+
+
+
+
+                if (newData.atk || newData.def) {
+                    newData.stats = [newData.atk, (newData.types.findIndex(tps => tps.toLowerCase() == "link") == -1) ? (newData.def) : (undefined)];
+                }
+
+
+                if (!Array.isArray(newData.link_arrows)) {
+                    newData.link_arrows = [newData.link_arrows];
+                }
+
+                if (imgs.length == 0) {
+                    imgs.push(document.getElementById('def').src)
+                }
+                newData.img = imgs;
+
+                Object.keys(response).map(k => {
+                    finalData[k] = (newData[k] != undefined) ? (newData[k]) : (response[k]);
+
+                })
+
+                if (finalData.types == undefined) {
+                    finalData.types = newData.types
+                }
+
+
+                if (finalData.type == undefined) {
+                    finalData.type = newData.type
+                }
+
+
+                if (finalData.stars == undefined) {
+                    finalData.stars = newData.stars
+                }
+
+
+                if (finalData.description == undefined) {
+                    finalData.description = newData.description
+                }
+
+
+                if (finalData.link_arrows == undefined) {
+                    finalData.link_arrows = newData.link_arrows
+                }
+
+
+                if (finalData.attributes == undefined) {
+                    finalData.attributes = newData.attributes
+                }
+
+                if (finalData.stats == undefined) {
+                    finalData.stats = newData.stats
+                }
+
+
+
+
+
+
+                try {
+                    const resp_server = await axios.post("/cards/", (finalData))
+                    window.location.reload()
+                } catch (error) {
+                    console.log(error);
+
+                }
+
+
+
+            }
+
+        })()
+
+
+
+    </script>
+</body>
+
+</html>

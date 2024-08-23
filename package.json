@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "axios": "^1.7.3",
+    "body-parser": "^1.20.2",
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.19.2",
+    "jsdom": "^24.1.1",
+    "nodemon": "^3.1.4",
+    "serve-static": "^1.15.0",
+    "ui": "file:Front"
+  },
+  "scripts": {
+    "val": "nodemon ./Cards/validation_server.js",
+    "cls": "nodemon ./Cards/prepare_frontend.js"
+  }
+}

@@ -1,0 +1,6 @@
+node_modules/
+.env
+Upload.bat
+/Libs/
+/Bk/
+/Utils/

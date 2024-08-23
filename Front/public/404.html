@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Page</title>
+</head>
+
+<body>
+    <h1 id="status">Loading...</h1>
+
+
+    <script>
+        const RepoName = "/RouterTest/";
+
+        setTimeout(() => {
+            document.getElementById("status")=   "404 - Page Not Found"
+        }, 3000);
+        window.location.href = window.location.origin + RepoName+ "#/" + window.location.pathname.replace(RepoName , "");
+
+        
+
+    </script>
+</body>
+
+</html>
