@@ -192,7 +192,8 @@
 
 
         (async () => {
-            const response = (await axios.get('/cards/data')).data;
+            try {
+                const response = (await axios.get('/cards/data')).data;
             console.log(response);
             document.title = response.id;
             imgs.push(response.img[0])
@@ -628,7 +629,8 @@
 
                 try {
                     const resp_server = await axios.post("/cards/", (finalData))
-                    window.location.reload()
+                    // window.location.reload(true)
+                    window.location.href = window.location.href
                 } catch (error) {
                     console.log(error);
 
@@ -636,6 +638,14 @@
 
 
 
+            }
+            } catch (error) {
+                if(error.code == "ERR_NETWORK"){
+                    setTimeout(() => {
+                        window.location.reload(true)
+                    }, 2000);
+                }
+                
             }
 
         })()
