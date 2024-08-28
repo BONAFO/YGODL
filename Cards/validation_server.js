@@ -53,7 +53,9 @@ const getImg = async (card) => {
 
             } catch (error) {
                 console.log(error);
-                break
+                console.log(error.status);
+                
+                return error.status
             }
 
         }
@@ -87,9 +89,12 @@ app.get('/cards/data', async (req, res) => {
         if (cardsManifiestFinal.findIndex(c => c.id == cardsManifiest[i].id) == -1 && cardsManifiest[i] != undefined) {
             cardsManifiest[i]["index"] = i;
            const img = await getImg(cardsManifiest[i].name)
-           if(img && !saved){
+           cardsManifiest[i].err = undefined;
+           if(img && img != 404 && !saved){
             saved = true
             cardsManifiest[i].img = [img].concat(cardsManifiest[i].img);
+           }else if (img  != 404 && !saved ){
+            cardsManifiest[i].err = 404;
            }
             res.json(cardsManifiest[i])
             break
