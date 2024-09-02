@@ -39,22 +39,22 @@ const getImg = async (card) => {
         if (anchor.textContent.toLowerCase().replaceAll(" ", "").includes("ygopro")) {
 
 
-           
+
 
 
             try {
                 let url = anchor.href.replace("/url?q=", "");
                 const ygo_response = (await axios.get(url)).data;
-                const index = [ygo_response.indexOf('figure') , ygo_response.indexOf('figcaption')];                
-                let tx = ygo_response.slice(index[0] , index[1]); 
+                const index = [ygo_response.indexOf('figure'), ygo_response.indexOf('figcaption')];
+                let tx = ygo_response.slice(index[0], index[1]);
                 const dom = new JSDOM(tx).window.document;
                 return dom.querySelectorAll("img")[0].src
-               
+
 
             } catch (error) {
                 console.log(error);
                 console.log(error.status);
-                
+
                 return error.status
             }
 
@@ -85,17 +85,20 @@ let saved = false;
 app.get('/cards/data', async (req, res) => {
     let i = 0;
     const cardsManifiestFinal = JSON.parse(JSON.stringify(get_final_manifiest()));
+
+
     do {
         if (cardsManifiestFinal.findIndex(c => c.id == cardsManifiest[i].id) == -1 && cardsManifiest[i] != undefined) {
             cardsManifiest[i]["index"] = i;
-           const img = await getImg(cardsManifiest[i].name)
-           cardsManifiest[i].err = undefined;
-           if(img && img != 404 && !saved){
-            saved = true
-            cardsManifiest[i].img = [img].concat(cardsManifiest[i].img);
-           }else if (img  != 404 && !saved ){
-            cardsManifiest[i].err = 404;
-           }
+            const img = await getImg(cardsManifiest[i].name)
+            cardsManifiest[i].err = undefined;
+            if (img && img != 404 && !saved) {
+                saved = true
+                cardsManifiest[i].img = [img].concat(cardsManifiest[i].img);
+            } else if (img != 404 && !saved) {
+                cardsManifiest[i].err = 404;
+            }
+            cardsManifiest[i].max = cardsManifiest.length;
             res.json(cardsManifiest[i])
             break
         }

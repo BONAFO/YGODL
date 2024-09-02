@@ -12,6 +12,7 @@ Object.keys(data).map((k)=>{
         
         
     }
+    
 
     if(typeof data[k] == 'string' && data[k].length == 0){
         delete data[k]
@@ -25,9 +26,13 @@ Object.keys(data).map((k)=>{
         }
     }
 
+
+
 })
 
-
+if(!Array.isArray(data["types"])){
+    data["types"] = [data["types"]];
+}
 return data
 }
 
@@ -49,6 +54,10 @@ const EvalTrapSpell = (data)=>{
 
 
     delete data["stats"]
+
+    if(!Array.isArray(data["types"])){
+        data["types"] = [data["types"]];
+    }
 
 
     return data

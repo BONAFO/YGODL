@@ -59,6 +59,19 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
+
+        #timer {
+            color: red !important;
+            font-size: 5vh;
+
+        }
+
+        .timer {
+            position: fixed;
+            bottom: -3%;
+            right: 1%;
+            z-index: 10000;
+        }
     </style>
 
 
@@ -78,7 +91,9 @@
 
 
 
-
+    <div class="timer">
+        <h3 id="timer">0</h3>
+    </div>
 
 
 
@@ -171,7 +186,8 @@
         <tbody>
             <tr id="img-cint">
                 <td class="img-in-cint">
-                    <img id="def" src="" style="width: 80%;" alt="">
+                    <img id="def" src="" 
+                    style="width: 80%;" alt="">
                 </td>
             </tr>
 
@@ -194,13 +210,77 @@
             try {
                 const response = (await axios.get('/cards/data')).data;
                 console.log(response);
-                document.title = response.id;
+                document.title = `${response.id}/${response.max}`;
                 imgs.push(response.img[0])
-                const tries = parseInt(sessionStorage.getItem("try"));
+                imgs.push(response.img[1])
+
+
+                if (!Array.isArray(response.types)) {
+                    response.types = [response.types];
+                }
+
+                try {
+                    console.log(imgs[0].includes("ygoprodeck"));
+                const max_try = 10;
+                let validator = false;
+                imgs.map(img => {
+                    if (img.includes("ygoprodeck")) {
+                        validator = true
+                    }
+                })
+
+                let tries = parseInt(sessionStorage.getItem("try"));
+                if(!validator){
+                    if(isNaN(tries)){
+                        tries = 0;
+                    }
+                   tries ++ 
+                   if(tries <= max_try){
+                    sessionStorage.setItem("try" , tries)
+                    window.location.reload()
+                   } else {
+                    sessionStorage.removeItem("try" )
+                   }
+                }
+                if(validator){
+                    sessionStorage.removeItem("try" )
+                }
+                } catch (error) {
+                    
+                }
+                // imgs.push(response.img[1])
        
+
+
+
+
+                const setTimer = () => {
+                    if (response.types && response.type == "Monster" && response.types.findIndex(tp => tp == undefined) != -1
+                    ) {
+                    } else {
+
+                        let timer = 6;
+                        window.onkeydown = (e) => {
+                            if (e.key == 'F8') {
+                                clearInterval(int)
+                            }
+
+                        }
+                        let int = setInterval(() => {
+                            timer--
+                            document.getElementById('timer').textContent = timer;
+                            if (timer <= 0) {
+                                clearInterval(int)
+                                save()
+                            }
+                        }, 1000);
+                    }
+                }
+                setTimer()
+
                 // const maxtry = 5;
                 // if (isNaN(tries) || tries < maxtry) {
-     
+
                 //     if (parseInt(response.err ) == 404) {
                 //         if (tries) {
                 //             sessionStorage.setItem("try", tries + 1)
@@ -212,6 +292,8 @@
                 //         }, 300);
                 //     }
                 // }
+
+                document.getElementById("img-prev").src = imgs[0];
 
                 const change_color = (img, div, label, value) => {
 
@@ -248,7 +330,11 @@
                     })
                 }
 
-                response.img.map((img, i) => {
+
+                for (let i = 0; i < response.img.length; i++) {
+                    const img = response.img[i];
+
+
                     const im = document.createElement('img');
                     const label = document.createElement("label");
                     label.textContent = 'None';
@@ -331,17 +417,26 @@
 
                     imgs.map((ims, i) => {
                         const ele = document.querySelectorAll(`[data-url="${ims}"]`)[0];
-                        ele.textContent = i;
-                        if (img == ims) {
-                            div.style.background = "red";
+                        if (ele) {
+                            ele.textContent = i;
+                            if (img == ims) {
+                                div.style.background = "red";
 
+                            }
                         }
                         // div.style.background = "red";
 
 
 
                     })
-                })
+
+                }
+
+
+                // response.img.map((img, i) => {
+
+
+                // })
 
                 document.getElementsByName('title')[0].value = response.name;
                 // IMAGES SECTION
@@ -476,7 +571,10 @@
                     }
 
 
+
+
                     document.getElementsByName('type')[0].value = response.type;
+
                 }
 
                 if (response.type) {
@@ -531,19 +629,26 @@
                         response.types = [response.types];
                     }
 
-                    response.types.map(ty => ty.trim()).map(ty => {
+                    response.types.map(ty => (ty == undefined) ? (ty) : (ty.trim())).map(ty => {
+                        if (ty == "Continuous") {
+                            ty = 'Continuos'
+                        }
                         add_types(ty)
                     })
 
                 }
 
-                document.getElementById('addtypes').onclick = add_types
+
                 // TYPES SECTION
                 if (response.description) {
                     document.getElementsByName("description")[0].value = response.description
                 }
 
-                document.getElementById('btn-save').onclick = async () => {
+                document.getElementById('addtypes').onclick =
+                    add_types
+
+
+                const save = async () => {
                     const data_elements = document.querySelectorAll('[data-data]');
                     const finalData = {};
 
@@ -576,13 +681,10 @@
 
 
 
-                    if (!Array.isArray(newData.types)) {
-                        newData.types = [newData.types];
-                    }
 
 
-
-
+                    try {
+                        
                     if (newData.atk || newData.def) {
                         newData.stats = [newData.atk, (newData.types.findIndex(tps => tps.toLowerCase() == "link") == -1) ? (newData.def) : (undefined)];
                     }
@@ -594,6 +696,9 @@
 
                     if (imgs.length == 0) {
                         imgs.push(document.getElementById('def').src)
+                    }
+                    } catch (error) {
+                        
                     }
                     newData.img = imgs;
 
@@ -644,17 +749,21 @@
                         const resp_server = await axios.post("/cards/", (finalData))
                         // window.location.reload(true)
                         window.location.reload()
-                 
-                           
+
+
                     } catch (error) {
                         console.log(error);
 
                     }
 
-
-
                 }
+
+                document.getElementById('btn-save').onclick = save
+
+
             } catch (error) {
+                console.log(error);
+
                 if (error.code == "ERR_NETWORK") {
                     setTimeout(() => {
                         window.location.reload(true)
