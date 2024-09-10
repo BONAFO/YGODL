@@ -29,7 +29,6 @@
 
         #img-prev {
             width: 100%;
-            height: 70vh;
             background-color: red;
         }
 
@@ -261,8 +260,11 @@
 
                         let timer = 10;
                         window.onkeydown = (e) => {
+                            console.log(e.key)
                             if (e.key == 'F8') {
                                 clearInterval(int)
+                            }else if(e.key == "|"){
+                                save()
                             }
 
                         }
@@ -772,8 +774,8 @@
 
             }
 
-        })()
 
+        })()
 
 
     </script>
