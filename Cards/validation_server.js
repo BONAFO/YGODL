@@ -83,35 +83,41 @@ app.get('/cards', (req, res) => {
 let saved = false;
 
 app.get('/cards/data', async (req, res) => {
-    let i = 0;
-    const cardsManifiestFinal = JSON.parse(JSON.stringify(get_final_manifiest()));
-
-
-    do {
-        if (cardsManifiestFinal.findIndex(c => c.id == cardsManifiest[i].id) == -1 && cardsManifiest[i] != undefined) {
-            cardsManifiest[i]["index"] = i;
-            const img = await getImg(cardsManifiest[i].name)
-            cardsManifiest[i].err = undefined;
-            if (img && img != 404 && !saved) {
-                saved = true
-                cardsManifiest[i].img = [img].concat(cardsManifiest[i].img);
-            } else if (img != 404 && !saved) {
-                cardsManifiest[i].err = 404;
+    try {
+        let i = 0;
+        const cardsManifiestFinal = JSON.parse(JSON.stringify(get_final_manifiest()));
+    
+    
+        do {
+            if (cardsManifiestFinal.findIndex(c => c.id == cardsManifiest[i].id) == -1 && cardsManifiest[i] != undefined) {
+                cardsManifiest[i]["index"] = i;
+                const img = await getImg(cardsManifiest[i].name)
+                cardsManifiest[i].err = undefined;
+                if (img && img != 404 && !saved) {
+                    saved = true
+                    cardsManifiest[i].img = [img].concat(cardsManifiest[i].img);
+                } else if (img != 404 && !saved) {
+                    cardsManifiest[i].err = 404;
+                }
+                cardsManifiest[i].max = cardsManifiest.length;
+                res.json(cardsManifiest[i])
+                break
             }
-            cardsManifiest[i].max = cardsManifiest.length;
-            res.json(cardsManifiest[i])
-            break
-        }
-
-
-        if (i > cardsManifiest.length) {
-            res.status(404).json({})
-            break
-        }
-        i++
-    } while (true);
-
-
+    
+    
+            if (i > cardsManifiest.length) {
+                res.status(404).json({})
+                break
+            }
+            i++
+        } while (true);
+    
+    
+    } catch (error) {
+        console.log("Conection Failed");
+        
+        res.status(500).json({})
+    }
 
 })
 
